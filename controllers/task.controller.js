@@ -1,11 +1,12 @@
 const {taskModel} = require("../models")
 
 
-const getAllTask = async (_, res) => {
+const getAllTask = async (req, res) => {
     try {
+        const user = req.user
         const tasks = await taskModel.find({})
         res.status(200)
-        res.send({message: "tasks:", data: tasks})
+        res.send({message: "tasks:", data: tasks, user})
 
     } catch (err) {
         res.status(403)
@@ -15,29 +16,27 @@ const getAllTask = async (_, res) => {
 }
 
 const getOneTask = async (req, res) => {
-    const _id = req.params.id
     try {
-        const task = await taskModel.findById({_id}) 
+        const task = await taskModel.findById({_id: req.params.id}) 
         res.status(200)
-        res.send({message: "task", data: task})    
+        res.send({data:task})
     } catch (err) {
-        res.send( {message: "task not found"})
-    }
-   
-   
-
-    
+        res.status(404)
+        res.send({error: "Task not found"})
+    }  
 }
 
+
 const createTask = async (req, res) =>{
-    const task = req.body
-    const taskexist = await taskModel.findOne({title: task.title})
+    const taskexist = await taskModel.findOne({title: req.body.title})
     if(taskexist){
-        res.status(403);
-        res.send({message: "task already exist"})
+
+        res.status(400)
+        res.send({error: "task already exist"})
+
     }else{
         try {
-            const newtask = await taskModel.create(task);
+            const newtask = await taskModel.create(req.body);
             await newtask.save();
     
             res.status(200)
@@ -45,12 +44,12 @@ const createTask = async (req, res) =>{
           
         } catch (err) {
             res.status(400)
-            res.send({ message: "error", ree: err})
+            res.send({error: "can not create task", msg: err})
         }
     }
-    
-    
+ 
 }
+
 
 //TODO ARREGLAR updatetask
 const updatetask = async (req, res) => {
@@ -66,18 +65,23 @@ const updatetask = async (req, res) => {
 
 
 const deletetask = async (req,res) => {
-    const oldtask = await getOne(req.params.id);
-    const _id = oldtask.data._id
-    
     try {
-        await taskModel.deleteOne({ _id});
-
-        res.status(200);
-        res.send({message: "task deleted", data: task})
+        const task = await taskModel.findById({_id: req.params.id})
+     
+        if(task){
+            await taskModel.delete({ _id: req.params.id});
+            res.status(200);
+            res.send({message: "task deleted"})
+        }else{
+            res.status(404)
+            res.send({error: "task already deleted"})
+        }
+        
     } catch (error) {
-        res.status(403);
-        res.send({message: "task already deleted"})
+        res.status(400)
+        res.send({error: "The Request is wrong"})
     }
+       
 }
 
 

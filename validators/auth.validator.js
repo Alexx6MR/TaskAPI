@@ -1,13 +1,12 @@
 const { check } = require("express-validator");
 const validateResults = require("../utils/handleValidator")
 
-const validationCreateUser = [
-    check("username")
-    .exists()
-    .notEmpty(),
+
+const validationLogin = [
     check("email")
     .exists()
-    .notEmpty(),
+    .notEmpty()
+    .isEmail(),
     check("password")
     .exists()
     .notEmpty(),
@@ -17,19 +16,22 @@ const validationCreateUser = [
     
 ]
 
-const validationUpdateUser = [
+const validationRegister = [
     check("username")
     .exists()
-    .notEmpty(),
+    .notEmpty()
+    .isLength({min:3, max: 20}),
     check("email")
     .exists()
-    .notEmpty(),
+    .notEmpty()
+    .isEmail(),
     check("password")
     .exists()
     .notEmpty(),
 
     (req, res, next)=> validateResults(req, res, next)
+    
+    
 ]
 
-
-module.exports = {validationCreateUser, validationUpdateUser}
+module.exports = {validationRegister, validationLogin}

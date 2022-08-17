@@ -1,10 +1,12 @@
 const {userModel} = require("../models")
+const {encrypt } = require("../utils/handlePassword")
+
 
 const createAdmin = async () =>{
    const user = {
       username: "Alexei",
       email: "alexei@email.com",
-      password: "alexeipsw",
+      password: await encrypt("alexeipsw"),
       role: "ADMIN"
   }
 

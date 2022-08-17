@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const mongooseDelete = require("mongoose-delete")
 
 const taskSchema = mongoose.Schema({
   title:  String, // String is shorthand for {type: String}
@@ -14,4 +14,5 @@ const taskSchema = mongoose.Schema({
 });
 
 
+taskSchema.plugin(mongooseDelete, { overrideMethods: "all"});
 module.exports = mongoose.model("task", taskSchema);
