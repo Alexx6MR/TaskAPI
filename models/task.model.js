@@ -11,8 +11,55 @@ const taskSchema = mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
   
-});
+}); 
 
+
+/**
+ * Implementar metodo de relacion
+ */
+
+
+ taskSchema.statics.findAllData = function () {
+  const joinData = this.aggregate([
+    {
+      $lookup: { 
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "Owner",
+
+      }
+    },
+    { $unwind: "$Owner"}
+  ])
+
+  return joinData
+ }
+
+ taskSchema.statics.findOneData = function (id) {
+  const joinData = this.aggregate([
+    { 
+      $match: 
+      {
+        _id: mongoose.Types.ObjectId(id)
+      } 
+    },
+    {
+      $lookup: { 
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "Owner",
+
+      }
+    },
+    { 
+      $unwind: "$Owner"
+    }
+  ])
+
+  return joinData
+ }
 
 taskSchema.plugin(mongooseDelete, { overrideMethods: "all"});
 module.exports = mongoose.model("task", taskSchema);

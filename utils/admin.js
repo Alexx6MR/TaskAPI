@@ -1,5 +1,5 @@
 const {userModel} = require("../models")
-const {encrypt } = require("../utils/handlePassword")
+const {encrypt} = require("./handlePassword")
 
 
 const createAdmin = async () =>{

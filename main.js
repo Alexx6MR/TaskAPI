@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const dbConnect = require("./config/mongo")
 const Route = require("./routes")
-const createAdmin = require("./config/admin")
+
 
 const PORT = process.env.PORT || 3000
 

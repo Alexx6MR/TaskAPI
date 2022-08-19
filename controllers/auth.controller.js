@@ -5,9 +5,6 @@ const {signToken} = require("../utils/handleJwt")
 
 
 
-
-
-
 const register = async (req, res) =>{
     const userexist = await userModel.findOne({email: req.body.email})
     if(userexist){
@@ -56,10 +53,11 @@ const login = async (req, res) =>{
         }
         
         await User.set("password", undefined, {strict: false})
-       const data = {
-        token: await signToken(User),
-        User
-       }
+        
+        const data = {
+            token: await signToken(User),
+            User
+        }
 
 
        res.send({data})

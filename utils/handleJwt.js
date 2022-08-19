@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken")
 const JWT_SECRET = process.env.JWT_SECRET
 
 const signToken = async (user) => {
-    const sign = await jwt.sign({
+    return await jwt.sign({
         _id: user._id,
         role: user.role
     },
@@ -14,13 +14,13 @@ const signToken = async (user) => {
     }
     );
 
-    return sign
+  
 }
 
 
 const verifyToken = async (tokenJwt) => {
     try {
-        return jwt.verify(tokenJwt, JWT_SECRET)
+        return await jwt.verify(tokenJwt, JWT_SECRET)
     } catch (e) {
         return null
     }

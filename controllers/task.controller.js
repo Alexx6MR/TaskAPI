@@ -3,21 +3,20 @@ const {taskModel} = require("../models")
 
 const getAllTask = async (req, res) => {
     try {
-        const user = req.user
-        const tasks = await taskModel.find({})
+        const tasks = await taskModel.findAllData({})
         res.status(200)
-        res.send({message: "tasks:", data: tasks, user})
+        res.send({message: "tasks:", data: tasks})
 
     } catch (err) {
         res.status(403)
-        res.send({message: "tasks not found "})
+        res.send({message: "tasks not found ", err: err.message})
     }
     
 }
 
 const getOneTask = async (req, res) => {
     try {
-        const task = await taskModel.findById({_id: req.params.id}) 
+        const task = await taskModel.findOneData(req.params.id) 
         res.status(200)
         res.send({data:task})
     } catch (err) {
@@ -44,7 +43,7 @@ const createTask = async (req, res) =>{
           
         } catch (err) {
             res.status(400)
-            res.send({error: "can not create task", msg: err})
+            res.send({error: "can not create task", error: err.message})
         }
     }
  

@@ -28,34 +28,6 @@ const getOne = async (req, res) => {
     }  
 }
 
-const createUser = async (req, res) =>{
-    const user = req.body
-    const userexist = await userModel.findOne({email: user.email})
-    if(userexist){
-        res.status(400);
-        res.send({message: "User already exist"})
-    }else{
-        try {
-     
-            const newuser = await userModel.create(user);
-            await newuser.save();
-    
-            res.status(201)
-            res.send({ message: "User created", user: newuser })
-          
-        } catch (err) {
-            handleHttpError(
-                {
-                    res:res, 
-                    message: "User cannot been created", 
-                    code: 400   
-                })
-        }
-    }
-    
-    
-}
-
 //TODO ARREGLAR updateUser
 const updateUser = async (req, res) => {
     try {
@@ -85,4 +57,4 @@ const deleteUser = async (req,res) => {
 }
 
 
-module.exports = {getAll, getOne, createUser, updateUser, deleteUser}
+module.exports = {getAll, getOne, updateUser, deleteUser}

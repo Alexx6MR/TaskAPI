@@ -8,14 +8,14 @@ const {getAllTask, getOneTask, createTask, updatetask, deletetask} = require("..
 const checkRol = require("../middleware/checkRol")
 
 
-route.get("/", authMiddleware, checkRol,  getAllTask )
+route.get("/", getAllTask )
 
-route.get("/:id", authMiddleware, getOneTask)
+route.get("/:id", getOneTask)
 
-route.post("/create", authMiddleware, validatorCreateTask, createTask)
+route.post("/create", validatorCreateTask, createTask)
 
-route.put("/update/:id",authMiddleware, updatetask)
+route.put("/update/:id", updatetask)
 
-route.delete("/delete/:id", authMiddleware, deletetask)
+route.delete("/delete/:id", deletetask)
 
 module.exports = route;
