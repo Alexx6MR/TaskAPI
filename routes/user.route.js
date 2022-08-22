@@ -1,18 +1,18 @@
 const express = require("express")
 const route = express.Router();
 const {validationUpdateUser} = require("../validators/user.validator")
+const {getAll, getUser, deleteUser, updateUser} = require("../controllers/user.controller")
+
+const {authMiddleware} = require("../middleware/session")
 
 
+route.get("/", authMiddleware, getAll)
 
-const {getAll, getOne, deleteUser, updateUser} = require("../controllers/user.controller")
+route.get("/:id", authMiddleware, getUser)
 
-route.get("/", getAll)
+route.patch("/update/:id", authMiddleware, updateUser)
 
-route.get("/:id", getOne)
-
-route.put("/update/:id", validationUpdateUser, updateUser)
-
-route.delete("/delete/:id", deleteUser)
+route.delete("/delete/:id", authMiddleware, deleteUser)
 
 
 

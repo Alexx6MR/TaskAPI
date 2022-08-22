@@ -4,18 +4,18 @@ const route = express.Router();
 const {validatorCreateTask} = require("../validators/task.validator")
 const {authMiddleware} = require("../middleware/session")
 
-const {getAllTask, getOneTask, createTask, updatetask, deletetask} = require("../controllers/task.controller")
-const checkRol = require("../middleware/checkRol")
+const {getOneTask, createTask, updatetask, deletetask, getAuhtorTask} = require("../controllers/task.controller")
 
 
-route.get("/", getAllTask )
+route.get("/", authMiddleware, getAuhtorTask )
 
-route.get("/:id", getOneTask)
+route.get("/:id", authMiddleware, getOneTask)
 
-route.post("/create", validatorCreateTask, createTask)
+route.post("/create", authMiddleware, validatorCreateTask, createTask)
 
-route.put("/update/:id", updatetask)
+route.patch("/update/:id", authMiddleware, updatetask)
 
-route.delete("/delete/:id", deletetask)
+route.delete("/delete/:id", authMiddleware, deletetask)
+
 
 module.exports = route;

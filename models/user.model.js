@@ -11,15 +11,38 @@ const userSchema = mongoose.Schema({
   role: {
     type: String,
     default: "USER"
-  },
-  tasks: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "task"
-  }],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-  
+  }, 
+},
+{
+  versionKey: false,
+  timestamps: true,
 });
+
+
+userSchema.statics.findAuthorTask = function (id) {
+  const joinData = this.aggregate([
+    { 
+      $match: 
+      {
+        _id: mongoose.Types.ObjectId(id)
+      } 
+    },
+    {
+      $lookup: { 
+        from: "tasks", // cual tabla buscar
+        localField: "_id", // que campo comparar de nuestro schema
+        foreignField: "author", // el campo comparado de la otra tabla
+        as: "tasks", // como entregarlo (array mode)
+
+      }
+    },
+  ])
+
+  return joinData
+ }
+
+
+
 
 userSchema.plugin(mongooseDelete, {overrideMethods: "all"})
 module.exports = mongoose.model("user", userSchema);

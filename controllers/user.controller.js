@@ -2,10 +2,9 @@ const {userModel} = require("../models")
 
 
 
-
-const getAll = async (_, res) => {
+const getAll = async (req, res) => {
     try {
-        const users = await userModel.find({})
+        const users = await userModel.findAuthorTask(req.user._id)
         res.status(200)
         res.send({message: "Users:", data: users})
 
@@ -17,44 +16,58 @@ const getAll = async (_, res) => {
     
 }
 
-const getOne = async (req, res) => {
+const getUser = async (req, res) => {
     try {
-        const task = await taskModel.findById({_id: req.params.id}) 
+        const user = await userModel.findById(req.user._id) 
         res.status(200)
-        res.send({data:task})
+        res.send({data:user})
     } catch (err) {
         res.status(404)
         res.send({error: "user not found"})
     }  
 }
 
-//TODO ARREGLAR updateUser
+
 const updateUser = async (req, res) => {
-    try {
-        const data = await userModel.findByIdAndUpdate(req.body._id, req.body)
-        res.status(200)
-        res.send({msg: "user updated", data: data })
-    } catch (err) {
-        res.status(400)
-        res.send({msg: "user dont work" })
+    const taskexist = await userModel.findById(req.params.id)
+   
+    if(!taskexist){
+        res.status(404)
+        res.send({err: "The User dont exist"})
+    }else{
+        try {
+            await userModel.updateOne({ _id: req.params.id}, {...req.body} );
+
+            res.status(200);
+            res.send({message: "user updated", taskexist})
+          
+        } catch (err) {
+            res.status(400)
+            res.send({err: "The Request is wrong", error: err.message})
+        }
     }
 }
 
 
 const deleteUser = async (req,res) => {
-    try {
-        await userModel.deleteOne({ _id: req.params.id});
-        res.status(200);
-        res.send({message: "User deleted"})
-    } catch (error) {
-        handleHttpError(
-            {
-                res:res, 
-                message: "User already deleted", 
-                code: 404   
-            })
+    const taskexist = await userModel.findById(req.params.id)
+   
+    if(!taskexist){
+        res.status(404)
+        res.send({err: "The User dont exist"})
+    }else{
+        try {
+            await userModel.deleteOne({ _id: req.params.id});
+
+            res.status(200);
+            res.send({message: "user deleted", taskexist})
+          
+        } catch (err) {
+            res.status(400)
+            res.send({err: "The Request is wrong", error: err.message})
+        }
     }
 }
 
 
-module.exports = {getAll, getOne, updateUser, deleteUser}
+module.exports = {getAll, getUser, updateUser, deleteUser}
